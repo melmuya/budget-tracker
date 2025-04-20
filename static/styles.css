@@ -1,0 +1,161 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f6f8fa;
+    color: #333;
+    margin: auto;
+    padding: 1.5rem; 
+    max-width: 700px;
+}
+
+h1, h2 {
+    color: #2c3e50;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    margin: 0.5rem 0;
+}
+
+form {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    /* gap: 0.75rem; */
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    /* margin-bottom: 0.1rem; */
+    display: block;
+}
+
+input[type="text"], 
+input[type="number"], 
+button {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+ul {
+    list-style: none;
+    /* padding-left: 0; */
+    padding: 0;
+    margin-top: 1rem;
+}
+
+li {
+    background: white;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.expense-item {
+    border-left: 8px solid #ccc;
+    padding-left: 1rem;
+}
+
+/* Category color mappings */
+.food {
+    border-color: #27ae60; /* Green */
+}
+.transport {
+    border-color: #2980b9; /* Blue */
+}
+.entertainment {
+    border-color: #8e44ad; /* Purple */
+}
+.health {
+    border-color: #e74c3c; /* Red */
+}
+.utilities {
+    border-color: #f39c12; /* Orange */
+}
+.other {
+    border-color: #7f8c8d; /* Gray */
+}
+
+.warning-over {
+    color: red;
+    font-weight: bold;
+}
+
+.warning-low {
+    color: orange;
+    font-weight: bold;
+}
+
+/* Layout improvements */
+body {
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Make buttons and inputs fill the screen width on small devices */
+@media (max-width: 600px) {
+    form {
+        padding: 1rem;
+    }
+
+    input, button {
+        font-size: 1.1rem;
+    }
+
+    h1, h2 {
+        font-size: 1.3rem;
+    }
+
+    li {
+        font-size: 1rem;
+    }
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    padding: 0.75rem 1rem;
+    display: flex;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    z-index: 10;
+}
+

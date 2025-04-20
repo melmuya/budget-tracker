@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expenses by Category</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Expenses by Category</h1>
+
+    {% if category_totals %}
+        <ul>
+            {% for category, total in category_totals.items() %}
+                <li><strong>{{ category }}:</strong> {{ total }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No expenses recorded yet.</p>
+    {% endif %}
+
+    <p><a href="/">← Back to Budget</a></p>
+</body>
+</html>

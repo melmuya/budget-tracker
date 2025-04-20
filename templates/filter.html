@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filter by Category</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Filter Expenses by Category</h1>
+
+    <form method="POST">
+        <label>Select category:</label><br>
+        <input type="text" name="category" required placeholder="e.g. Food"><br><br>
+        <button type="submit">Filter</button>
+    </form>
+
+    {% if selected_category %}
+        <h2>Results for '{{ selected_category }}'</h2>
+
+        {% if filtered_expenses %}
+            <ul>
+                {% for expense in filtered_expenses %}
+                    <li>
+                        {{ expense.Description }} - {{ expense.Amount }} on {{ expense.Date }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No expenses found in this category.</p>
+        {% endif %}
+    {% endif %}
+
+    <p><a href="/">← Back to Budget</a></p>
+</body>
+</html>

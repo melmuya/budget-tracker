@@ -1,7 +1,14 @@
 from flask import Flask, render_template, request, redirect
 from budget_tracker import (add_expense, get_total_expenses, get_balance, show_budget_details, load_budget_data, save_budget_details, show_expenses_by_category, filter_expenses_by_category)
+from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
 DATA_FILE = "budget_data.json"
 
 @app.route("/", methods=["GET", "POST"])
@@ -99,6 +106,31 @@ def erase_data():
         return redirect("/")
 
     return render_template("erase.html")
+
+
+# Temporary test model
+class TestEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.String(100), nullable=False)
+
+# Route to test DB
+@app.route("/test-db")
+def test_db():
+    try:
+        db.create_all()  # Ensure table exists
+
+        # Add new test entry
+        entry = TestEntry(message="Hello from the database!")
+        db.session.add(entry)
+        db.session.commit()
+
+        # Fetch all entries
+        entries = TestEntry.query.all()
+        return "<br>".join([f"{e.id}: {e.message}" for e in entries])
+
+    except Exception as e:
+        return f"Error: {str(e)}"
+
 
 if __name__ == "__main__":
     app.run(debug=True)

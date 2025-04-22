@@ -9,6 +9,18 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+# Database Models
+class Budget(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    amount = db.Column(db.Float, nullable=False)
+
+class Expense():
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    
+
 DATA_FILE = "budget_data.json"
 
 @app.route("/", methods=["GET", "POST"])
@@ -130,6 +142,10 @@ def test_db():
 
     except Exception as e:
         return f"Error: {str(e)}"
+
+
+with app.app_context():
+    db.create_all()
 
 
 if __name__ == "__main__":

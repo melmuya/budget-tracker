@@ -40,6 +40,7 @@ A simple, responsive budget-tracking web app built with Python and Flask. Users 
 git clone https://github.com/melmuya/budget-tracker.git
 cd budget-tracker
 
+```
 ### 2. Create Virtual Environment
 
 python -m venv venv
@@ -99,3 +100,6 @@ Feel free to fork it, build on it, and make it your own!
 - [kingzedek.com](https://kingzedek.com)  
 - [GitHub: @melmuya](https://github.com/melmuyayour-username)  
 - [LinkedIn: https://www.linkedin.com/in/melchizedek-maranga/]  
+
+```
+

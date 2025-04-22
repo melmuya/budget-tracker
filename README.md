@@ -42,23 +42,23 @@ cd budget-tracker
 
 ```
 ### 2. Create Virtual Environment
-
+```
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-
+```
 ### 3. Install Dependencies
-
+```
 pip install flask
 
-
+```
 ### 4. Run the App
-
+```
 python app.py
 
-
+```
 ### Folder Structure
-
+```
 budget-tracker/
 ├── app.py
 ├── budget_tracker.py
@@ -73,10 +73,11 @@ budget-tracker/
 │   └── erase.html
 └── README.md
 
-
+```
 ### 📄 .gitignore
-
+```
 Make sure your .gitignore includes:
+
 # Python
 __pycache__/
 *.pyc
@@ -87,7 +88,7 @@ venv/
 # Local data file
 budget_data.json
 
-
+```
 ## 📄 License
 
 This project is open for educational or personal use.

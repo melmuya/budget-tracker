@@ -75,9 +75,9 @@
             <tbody>
                 {% for expense in expenses %}
                 <tr class="{{ expense.Category|lower }}">
-                    <td>{{ expense.Description }}</td>
-                    <td>{{ expense.Amount }}</td>
-                    <td>{{ expense.Category }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>{{ expense.amount }}</td>
+                    <td>{{ expense.category }}</td>
                     <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td><a href="/edit/{{ loop.index0 }}">Edit</a></td>
                 </tr>

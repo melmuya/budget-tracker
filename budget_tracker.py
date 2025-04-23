@@ -14,10 +14,11 @@ def add_expense(expenses, description, amount, category):
 
 
 def get_total_expenses(expenses):
-    total = 0
-    for expense in expenses:
-        total += expense["Amount"]
-    return total
+    # total = 0
+    # for expense in expenses:
+    #     total += expense["Amount"]
+    # return total
+    return sum(expense.amount for expense in expenses)
 
 def get_balance(budget, expenses):
     balance = budget - get_total_expenses(expenses)

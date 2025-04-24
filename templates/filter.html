@@ -18,13 +18,28 @@
         <h2>Results for '{{ selected_category }}'</h2>
 
         {% if filtered_expenses %}
-            <ul>
-                {% for expense in filtered_expenses %}
-                    <li>
-                        {{ expense.Description }} - {{ expense.Amount }} on {{ expense.Date }}
-                    </li>
-                {% endfor %}
-            </ul>
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount (Ksh)</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in filtered_expenses %}
+                    <tr class="{{ expense.category|lower }}">
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.category }}</td>
+                        <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td><a href="/edit/{{ expense.id }}">Edit</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
             <p>No expenses found in this category.</p>
         {% endif %}

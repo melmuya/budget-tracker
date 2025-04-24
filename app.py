@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from budget_tracker import (get_total_expenses, get_balance)
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -85,11 +85,10 @@ def index():
         balance=balance
     )
 
-@app.route("/edit/<int:index>", methods=["GET", "POST"])
-def edit_expense(index):
+@app.route("/edit/<int:expense_id>", methods=["GET", "POST"])
+def edit_expense(expense_id):
     
-    budget = get_budget()
-    expense = Expense.query.get(index) # Get by ID, not list index
+    expense = db.session.get(Expense, expense_id) # Get by ID, not list index
 
     if not expense:
         return "Expense not found", 404
@@ -102,7 +101,7 @@ def edit_expense(index):
             db.session.commit()
         except ValueError:
             return "Invalid input", 400
-        return redirect("/")
+        return redirect(url_for("index"))
 
     return render_template("edit.html", index=index, expense=expense)
 

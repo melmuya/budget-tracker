@@ -74,12 +74,12 @@
             </thead>
             <tbody>
                 {% for expense in expenses %}
-                <tr class="{{ expense.Category|lower }}">
+                <tr class="{{ expense.category|lower }}">
                     <td>{{ expense.description }}</td>
                     <td>{{ expense.amount }}</td>
                     <td>{{ expense.category }}</td>
                     <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td><a href="/edit/{{ loop.index0 }}">Edit</a></td>
+                    <td><a href="/edit/{{ expense.id }}">Edit</a></td>
                 </tr>
                 {% endfor %}
             </tbody>

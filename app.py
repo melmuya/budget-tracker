@@ -77,12 +77,22 @@ def index():
     total_spent = get_total_expenses(expenses)
     balance = get_balance(budget, expenses)
 
+    expense_dicts = [
+        {
+            "description": e.description,
+            "amount": e.amount,
+            "category": e.category.lower(),  # for consistency
+            "created_at": e.created_at.strftime("%Y-%m-%d %H:%M")
+        } for e in expenses
+    ]
+    
     return render_template(
         "index.html",
         budget=budget,
         expenses=expenses,
         total_spent=total_spent,
-        balance=balance
+        balance=balance,
+        expense_data=expense_dicts,
     )
 
 @app.route("/edit/<int:expense_id>", methods=["GET", "POST"])

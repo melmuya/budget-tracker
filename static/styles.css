@@ -1,29 +1,49 @@
+/* Base setup */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f6f8fa;
-    color: #333;
-    margin: auto;
-    padding: 1.5rem; 
-    max-width: 700px;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    margin: 0;
+    padding: 2rem;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-h1, h2 {
-    color: #2c3e50;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-p {
-    margin: 0.5rem 0;
-}
-
-form {
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
+/* Navbar */
+.navbar {
     display: flex;
-    flex-direction: column;
-    /* gap: 0.75rem; */
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+/* Headings */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #0f172a;
+}
+
+h2 {
+    font-size: 1.25rem;
+    color: #334155;
+    margin-bottom: 0.75rem;
+    margin-top: 2rem;
+}
+
+/* Forms */
+form {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    margin-bottom: 2rem;
 }
 
 .form-group {
@@ -31,155 +51,158 @@ form {
 }
 
 label {
-    /* margin-bottom: 0.1rem; */
     display: block;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
 }
 
-input[type="text"], 
-input[type="number"], 
+input[type="text"],
+input[type="number"],
 button {
     width: 100%;
-    padding: 0.5rem;
-    margin: 0.5rem 0 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 0.6rem;
+    border-radius: 8px;
     font-size: 1rem;
+    border: 1px solid #cbd5e1;
     box-sizing: border-box;
 }
 
 button {
-    background-color: #007bff;
+    background-color: #3b82f6;
     color: white;
-    cursor: pointer;
+    font-weight: 600;
     border: none;
-    font-size: 1rem;
-    padding: 0.75rem;
-    border-radius: 6px;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    transition: background 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #2563eb;
 }
 
-a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-
-ul {
-    list-style: none;
-    /* padding-left: 0; */
-    padding: 0;
-    margin-top: 1rem;
-}
-
-li {
-    background: white;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 0.5rem;
-}
-
-.expense-item {
-    border-left: 8px solid #ccc;
-    padding-left: 1rem;
-}
-
-/* Category color mappings */
-.food {
-    border-color: #27ae60; /* Green */
-}
-.transport {
-    border-color: #2980b9; /* Blue */
-}
-.entertainment {
-    border-color: #8e44ad; /* Purple */
-}
-.health {
-    border-color: #e74c3c; /* Red */
-}
-.utilities {
-    border-color: #f39c12; /* Orange */
-}
-.other {
-    border-color: #7f8c8d; /* Gray */
+/* Summary Section */
+p {
+    margin: 0.25rem 0;
+    font-size: 1rem;
 }
 
 .warning-over {
-    color: red;
+    color: #dc2626;
     font-weight: bold;
 }
 
 .warning-low {
-    color: orange;
+    color: #f97316;
     font-weight: bold;
 }
 
-/* Layout improvements */
-body {
-    max-width: 800px;
-    margin: auto;
-}
-
-/* Make buttons and inputs fill the screen width on small devices */
-@media (max-width: 600px) {
-    form {
-        padding: 1rem;
-    }
-
-    input, button {
-        font-size: 1.1rem;
-    }
-
-    h1, h2 {
-        font-size: 1.3rem;
-    }
-
-    li {
-        font-size: 1rem;
-    }
-}
-
-.navbar {
-    position: sticky;
-    top: 0;
-    background-color: #ffffff;
-    padding: 0.75rem 1rem;
-    display: flex;
-    gap: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin-bottom: 1.5rem;
-    z-index: 10;
-}
-
+/* Expenses Table */
 .expense-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
 }
 
 .expense-table th,
 .expense-table td {
-    border: 1px solid #ccc;
-    padding: 8px 12px;
+    padding: 0.75rem 1rem;
     text-align: left;
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .expense-table th {
-    background-color: #f4f4f4;
-}
-
-.expense-table tr:nth-child(even) {
-    background-color: #fafafa;
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
 }
 
 .expense-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f8fafc;
+}
+
+/* Category Colors */
+.food { border-left: 6px solid #22c55e; }
+.transport { border-left: 6px solid #3b82f6; }
+.entertainment { border-left: 6px solid #a855f7; }
+.health { border-left: 6px solid #ef4444; }
+.utilities { border-left: 6px solid #f97316; }
+.other { border-left: 6px solid #64748b; }
+
+/* Category Summary Section */
+.category-summary {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+.category-summary h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #334155;
+}
+
+.category-summary ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.category-summary li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+.dashboard-overview {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.budget-summary {
+    flex: 1;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    min-width: 280px;
+}
+
+.chart-wrapper {
+    flex: 1;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

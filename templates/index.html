@@ -4,6 +4,7 @@
     <title>Budget Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -26,18 +27,27 @@
         </form>
 
     {% else %}
-        <h2>Summary</h2>
-        <p><strong>Initial Budget:</strong> Ksh {{ budget }}</p>
-        <p><strong>Total Spent:</strong> Ksh {{ total_spent }}</p>
-        <p><strong>Remaining Balance:</strong> Ksh {{ balance }}</p>
-
-        {% if balance < 0 %}
-            <p class="warning-over">💸 You are over budget!</p>
-        {% elif balance <= budget * 0.2 %}
-            <p class="warning-low">⚠️ You're almost out of money (Ksh {{ balance }})</p>
-        {% endif %}
+    <div class="dashboard-overview">
+        <div class="budget-summary">
+            <h2>Summary</h2>
+            <p><strong>Initial Budget:</strong> Ksh {{ budget }}</p>
+            <p><strong>Total Spent:</strong> Ksh {{ total_spent }}</p>
+            <p><strong>Remaining Balance:</strong> Ksh {{ balance }}</p>
+    
+            {% if balance < 0 %}
+                <p class="warning-over">💸 You are over budget!</p>
+            {% elif balance <= budget * 0.2 %}
+                <p class="warning-low">⚠️ You're almost out of money (Ksh {{ balance }})</p>
+            {% endif %}
+        </div>
+        <div class="chart-wrapper">
+            <h2>Expense Breakdown</h2>
+            <canvas id="expenseChart" width="300" height="300"></canvas>
+        </div>
+    </div>
        
         <hr>
+
 
         <h2>Add a New Expense</h2>
         <form method="POST">
@@ -59,7 +69,7 @@
         </form>
 
         <hr>
-
+        
         <h2>Expenses</h2>
 
         <table class="expense-table">
@@ -74,7 +84,7 @@
             </thead>
             <tbody>
                 {% for expense in expenses %}
-                <tr class="{{ expense.category|lower }}">
+                <tr data-category="{{ expense.category|lower }}">
                     <td>{{ expense.description }}</td>
                     <td>{{ expense.amount }}</td>
                     <td>{{ expense.category }}</td>
@@ -90,5 +100,59 @@
         <p><a href="/filter">🔍 Filter Expenses by Category</a></p>
         <p><a href="/erase" style="color: red;">❌ Erase all data (Start over)</a></p>
     {% endif %}
+
+    <script>
+        // Ensure 'expenses' is declared only once
+        const expenses = {{ expense_data | tojson }};
+        const categoryTotals = {};
+
+        expenses.forEach(e => {
+            const cat = e.category;
+            if (!categoryTotals[cat]) categoryTotals[cat] = 0;
+            categoryTotals[cat] += e.amount;
+        });
+
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(categoryTotals), // Ensure comma is present
+                datasets: [{
+                    label: 'Expenses by Category',
+                    data: Object.values(categoryTotals),
+                    backgroundColor: [
+                        '#22c55e', '#3b82f6', '#a855f7', '#ef4444', '#f97316', '#64748b'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Dynamic row coloring based on category
+        document.querySelectorAll('[data-category]').forEach(row => {
+        const cat = row.dataset.category;
+        const colorMap = {
+            food: '#22c55e',
+            transport: '#3b82f6',
+            entertainment: '#a855f7',
+            health: '#ef4444',
+            utilities: '#f97316',
+            other: '#64748b'
+        };
+
+        row.style.borderLeft = `6px solid ${colorMap[cat] || '#cbd5e1'}`;
+        });
+
+
+    </script>
+      
+
 </body>
 </html>

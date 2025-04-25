@@ -206,3 +206,50 @@ p {
     flex-direction: column;
     align-items: center;
 }
+
+.empty-state {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.empty-state img {
+    max-width: 300px;
+    margin-top: 1rem;
+}
+
+/* Budget Summary */
+.budget-summary {
+    background-color: #f8fafc; /* soft light gray-blue */
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    max-width: 500px;
+}
+
+.budget-summary h2 {
+    margin-top: 0;
+    color: #0f172a; /* dark slate */
+}
+
+.budget-summary p {
+    font-size: 1.1rem;
+    margin: 10px 0;
+    color: #334155; /* slate */
+}
+
+.budget-summary strong {
+    color: #1e293b; /* darker text for emphasis */
+}
+
+.warning-over {
+    color: #dc2626; /* red */
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.warning-low {
+    color: #f59e0b; /* amber */
+    font-weight: bold;
+    margin-top: 10px;
+}

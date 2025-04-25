@@ -42,7 +42,14 @@
         </div>
         <div class="chart-wrapper">
             <h2>Expense Breakdown</h2>
-            <canvas id="expenseChart" width="300" height="300"></canvas>
+            {% if expenses|length == 0 %}
+                <div class="empty-state">
+                    <img src="{{ url_for('static', filename='images/undraw_no-data_ig65.svg') }}" alt="No data" class="empty-illustration">
+                    <p>No expense data yet to display chart.</p>
+                </div>
+            {% else %}
+                <canvas id="expenseChart" width="300" height="300"></canvas>
+            {% endif %}
         </div>
     </div>
        
@@ -72,28 +79,36 @@
         
         <h2>Expenses</h2>
 
-        <table class="expense-table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Amount (Ksh)</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Edit</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for expense in expenses %}
-                <tr data-category="{{ expense.category|lower }}">
-                    <td>{{ expense.description }}</td>
-                    <td>{{ expense.amount }}</td>
-                    <td>{{ expense.category }}</td>
-                    <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td><a href="/edit/{{ expense.id }}">Edit</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if expenses|length == 0 %}
+            <div class="empty-state">
+                <img src="{{ url_for('static', filename='images/undraw_no-data_ig65.svg') }}" alt="No data" class="empty-illustration">
+                <p>No expenses added yet.</p>
+            </div>
+        {% else %}
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount (Ksh)</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr data-category="{{ expense.category|lower }}">
+                        <td>{{ expense.description }}</td>
+                        <td>{{ expense.amount }}</td>
+                        <td>{{ expense.category }}</td>
+                        <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td><a href="/edit/{{ expense.id }}">Edit</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
         
 
         <p><a href="/categories">📊 View Expenses by Category</a></p>

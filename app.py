@@ -85,7 +85,7 @@ def index():
             "created_at": e.created_at.strftime("%Y-%m-%d %H:%M")
         } for e in expenses
     ]
-    
+
     return render_template(
         "index.html",
         budget=budget,
@@ -150,8 +150,6 @@ def filter_by_category():
 
 @app.route("/erase", methods=["GET", "POST"])
 def erase_data():
-    budget = get_budget()
-
     if request.method == "POST":
         set_budget(0)
         Expense.query.delete()

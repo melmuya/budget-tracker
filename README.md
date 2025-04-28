@@ -1,6 +1,6 @@
 # 💰 Budget Tracker (Flask)
 
-A simple, responsive budget-tracking web app built with Python and Flask. Users can set a budget, add and edit expenses, view spending summaries by category, filter expenses, and reset all data. It stores data locally in a JSON file — no database setup needed.
+A simple, responsive budget-tracking web app built with Python and Flask. Users can set a budget, add and edit expenses, view spending summaries by category, filter expenses, and reset all data. It stores data securely in a PostgreSQL database using SQLAlchemy ORM.
 
 ---
 
@@ -21,7 +21,8 @@ A simple, responsive budget-tracking web app built with Python and Flask. Users 
 - [Python 3](https://www.python.org/)
 - [Flask](https://flask.palletsprojects.com/)
 - HTML + CSS (vanilla)
-- Local JSON storage (no external DB)
+- SQLAlchemy
+- PostgreSQL
 
 ---
 
@@ -52,26 +53,18 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install flask
 
 ```
-### 4. Run the App
+### 4. Set Up Environment Varaibles
 ```
-python app.py
+DATABASE_URL=your_postgresql_database_url
 
 ```
-### Folder Structure
+### 5. Run Database Migrations
+
+If needed, create tables manually or using SQLAlchemy inside app.py
+
+### 6. Run the App
 ```
-budget-tracker/
-├── app.py
-├── budget_tracker.py
-├── budget_data.json       # Local data file (git-ignored)
-├── static/
-│   └── styles.css
-├── templates/
-│   ├── index.html
-│   ├── edit.html
-│   ├── categories.html
-│   ├── filter.html
-│   └── erase.html
-└── README.md
+python app.py
 
 ```
 ### 📄 .gitignore
@@ -85,7 +78,10 @@ __pycache__/
 # Virtual environment
 venv/
 
-# Local data file
+# Environment variables
+.env
+
+# Local data file (no longer used)
 budget_data.json
 
 ```

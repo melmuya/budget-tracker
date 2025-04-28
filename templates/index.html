@@ -152,6 +152,16 @@
                 });
 
                 const ctx = chartElement.getContext('2d');
+                const colorMap = {
+                    food: '#22c55e',
+                    transport: '#3b82f6',
+                    entertainment: '#a855f7',
+                    health: '#ef4444',
+                    utilities: '#f97316',
+                    other: '#64748b' // No trailing comma
+                };
+
+                // Chart.js configuration
                 const chart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -173,22 +183,20 @@
                         }
                     }
                 });
+
+                // Dynamic row coloring based on category
+                document.querySelectorAll('[data-category]').forEach(row => {
+                    const cat = row.dataset.category;
+                    row.style.borderLeft = `6px solid ${colorMap[cat] || '#cbd5e1'}`;
+                });
+            } else {
+                console.log("No expense data available to display in the chart.");
+                if (chartElement) {
+                    chartElement.parentElement.innerHTML = `
+                        <p class="no-data-message">No expense data available to display.</p>
+                    `;
+                }
             }
-
-            // Dynamic row coloring based on category
-            document.querySelectorAll('[data-category]').forEach(row => {
-                const cat = row.dataset.category;
-                const colorMap = {
-                    food: '#22c55e',
-                    transport: '#3b82f6',
-                    entertainment: '#a855f7',
-                    health: '#ef4444',
-                    utilities: '#f97316',
-                    other: '#64748b'
-                };
-
-                row.style.borderLeft = `6px solid ${colorMap[cat] || '#cbd5e1'}`;
-            });
         });
     </script>
 </body>

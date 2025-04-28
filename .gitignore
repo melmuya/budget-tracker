@@ -7,3 +7,5 @@ venv/
 
 # Data file
 budget_data.json
+
+.env

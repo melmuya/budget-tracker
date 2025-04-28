@@ -28,8 +28,8 @@ A simple, responsive budget-tracking web app built with Python and Flask. Users 
 
 ## 📸 Screenshots
 
-![alt text](image-1.png)
-![alt text](image.png)
+![alt text](image-3.png)
+![alt text](image-2.png)
 
 ---
 

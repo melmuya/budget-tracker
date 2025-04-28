@@ -1,23 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Expenses by Category</title>
+    <title>Expenses by Category | Budget Tracker</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>Expenses by Category</h1>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2 style="margin: 0;"><i class="fas fa-wallet"></i> Budget Tracker</h2>
+        </div>
+        <div class="navbar-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/categories" class="active"><i class="fas fa-chart-pie"></i> Categories</a>
+            <a href="/filter"><i class="fas fa-filter"></i> Filter</a>
+            <a href="/erase"><i class="fas fa-trash-alt"></i> Reset</a>
+        </div>
+    </nav>
 
-    {% if category_totals %}
-        <ul>
-            {% for category, total in category_totals.items() %}
-                <li><strong>{{ category }}:</strong> {{ total }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No expenses recorded yet.</p>
-    {% endif %}
+    <div class="container">
+        <h1><i class="fas fa-chart-pie"></i> Expenses by Category</h1>
 
-    <p><a href="/">← Back to Budget</a></p>
+        {% if category_totals %}
+            <div class="category-list fade-in">
+                {% for category, total in category_totals.items() %}
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="badge badge-{{ category|lower }}">{{ category }}</span>
+                    </div>
+                    <div class="category-amount">Ksh {{ total }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info fade-in">
+                <i class="fas fa-info-circle"></i> No expenses recorded yet. Add some expenses to see categories.
+            </div>
+        {% endif %}
+
+        <a href="/" class="back-link fade-in">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

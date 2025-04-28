@@ -1,50 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Filter by Category</title>
+    <title>Filter Expenses | Budget Tracker</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>Filter Expenses by Category</h1>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2 style="margin: 0;"><i class="fas fa-wallet"></i> Budget Tracker</h2>
+        </div>
+        <div class="navbar-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/categories"><i class="fas fa-chart-pie"></i> Categories</a>
+            <a href="/filter" class="active"><i class="fas fa-filter"></i> Filter</a>
+            <a href="/erase"><i class="fas fa-trash-alt"></i> Reset</a>
+        </div>
+    </nav>
 
-    <form method="POST">
-        <label>Select category:</label><br>
-        <input type="text" name="category" required placeholder="e.g. Food"><br><br>
-        <button type="submit">Filter</button>
-    </form>
+    <div class="container">
+        <h1><i class="fas fa-filter"></i> Filter Expenses by Category</h1>
 
-    {% if selected_category %}
-        <h2>Results for '{{ selected_category }}'</h2>
+        <div class="card fade-in">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="category">Select Category:</label>
+                    <input type="text" id="category" name="category" required placeholder="e.g. Food, Transport, Entertainment">
+                </div>
+                <button type="submit"><i class="fas fa-search"></i> Filter Results</button>
+            </form>
+        </div>
 
-        {% if filtered_expenses %}
-            <table class="expense-table">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Amount (Ksh)</th>
-                        <th>Category</th>
-                        <th>Date</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expense in filtered_expenses %}
-                    <tr class="{{ expense.category|lower }}">
-                        <td>{{ expense.description }}</td>
-                        <td>{{ expense.amount }}</td>
-                        <td>{{ expense.category }}</td>
-                        <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td><a href="/edit/{{ expense.id }}">Edit</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No expenses found in this category.</p>
+        {% if selected_category %}
+            <div class="card fade-in">
+                <h2>Results for '{{ selected_category }}'</h2>
+
+                {% if filtered_expenses %}
+                    <table class="expense-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Amount (Ksh)</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in filtered_expenses %}
+                            <tr data-category="{{ expense.category|lower }}">
+                                <td>{{ expense.description }}</td>
+                                <td>{{ expense.amount }}</td>
+                                <td>
+                                    <span class="badge badge-{{ expense.category|lower }}">
+                                        {{ expense.category }}
+                                    </span>
+                                </td>
+                                <td>{{ expense.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <a href="/edit/{{ expense.id }}" class="btn btn-sm btn-outline">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No expenses found in this category.
+                    </div>
+                {% endif %}
+            </div>
         {% endif %}
-    {% endif %}
 
-    <p><a href="/">← Back to Budget</a></p>
+        <a href="/" class="back-link fade-in">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

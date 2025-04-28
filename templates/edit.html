@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit Expense</title>
+    <title>Edit Expense | Budget Tracker</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>Edit Expense</h1>
-    <form method="POST">
-        <label>Description:</label><br>
-        <input type="text" name="description" value="{{ expense.description }}" required><br><br>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2 style="margin: 0;"><i class="fas fa-wallet"></i> Budget Tracker</h2>
+        </div>
+        <div class="navbar-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/categories"><i class="fas fa-chart-pie"></i> Categories</a>
+            <a href="/filter"><i class="fas fa-filter"></i> Filter</a>
+            <a href="/erase"><i class="fas fa-trash-alt"></i> Reset</a>
+        </div>
+    </nav>
 
-        <label>Amount:</label><br>
-        <input type="number" name="amount" step="0.01" value="{{ expense.amount }}" required><br><br>
+    <div class="container">
+        <h1><i class="fas fa-edit"></i> Edit Expense</h1>
 
-        <label>Category:</label><br>
-        <input type="text" name="category" value="{{ expense.category }}" required><br><br>
+        <div class="card fade-in">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description" value="{{ expense.description }}" required>
+                </div>
 
-        <button type="submit">Update Expense</button>
-    </form>
+                <div class="form-group">
+                    <label for="amount">Amount (Ksh):</label>
+                    <input type="number" id="amount" name="amount" step="0.01" value="{{ expense.amount }}" required>
+                </div>
 
-    <p><a href="{{ url_for('index') }}">← Back to Budget</a></p>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <input type="text" id="category" name="category" value="{{ expense.category }}" required>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" style="flex: 1;"><i class="fas fa-save"></i> Update Expense</button>
+                </div>
+            </form>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="back-link fade-in">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

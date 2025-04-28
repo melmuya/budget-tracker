@@ -1,173 +1,195 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Budgetly</title>
+    <title>Budget Tracker</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
     <nav class="navbar">
-        <a href="/">🏠 Home</a>
-        <a href="/categories">📊 Categories</a>
-        <a href="/filter">🔍 Filter</a>
-        <a href="/erase" style="color: red;">❌ Reset</a>
+        <div class="navbar-brand">
+            <h2 style="margin: 0;"><i class="fas fa-wallet"></i> Budget Tracker</h2>
+        </div>
+        <div class="navbar-links">
+            <a href="/" class="active"><i class="fas fa-home"></i> Home</a>
+            <a href="/categories"><i class="fas fa-chart-pie"></i> Categories</a>
+            <a href="/filter"><i class="fas fa-filter"></i> Filter</a>
+            <a href="/erase"><i class="fas fa-trash-alt"></i> Reset</a>
+        </div>
     </nav>
-    
 
-    <h1>Budgetly</h1>
+    <div class="container">
+        <h1>Your Financial Dashboard</h1>
 
-    {% if budget == 0 %}
-        <h2>Set Initial Budget</h2>
-        <form method="POST">
-            <label>Initial Budget:</label><br>
-            <input type="number" name="initial_budget" step="0.01" required><br><br>
-            <button type="submit">Set Budget</button>
-        </form>
-
-    {% else %}
-    <div class="dashboard-overview">
-        <div class="budget-summary">
-            <h2>Summary</h2>
-            <p><strong>Initial Budget:</strong> Ksh {{ budget }}</p>
-            <p><strong>Total Spent:</strong> Ksh {{ total_spent }}</p>
-            <p><strong>Remaining Balance:</strong> Ksh {{ balance }}</p>
-    
-            {% if balance < 0 %}
-                <p class="warning-over">💸 You are over budget!</p>
-            {% elif balance <= budget * 0.2 %}
-                <p class="warning-low">⚠️ You're almost out of money (Ksh {{ balance }})</p>
-            {% endif %}
-        </div>
-        <div class="chart-wrapper">
-            <h2>Expense Breakdown</h2>
-            {% if expenses|length == 0 %}
-                <div class="empty-state">
-                    <img src="{{ url_for('static', filename='images/undraw_no-data_ig65.svg') }}" alt="No data" class="empty-illustration">
-                    <p>No expense data yet to display chart.</p>
-                </div>
-            {% else %}
-                <canvas id="expenseChart" width="300" height="300"></canvas>
-            {% endif %}
-        </div>
-    </div>
-       
-        <hr>
-
-
-        <h2>Add a New Expense</h2>
-        <form method="POST">
-            <div class="form-group">
-                <label>Description:</label><br>
-                <input type="text" name="description" required><br><br>
-            </div>
-            <div class="form-group">
-                <label>Amount:</label><br>
-                <input type="number" name="amount" step="0.01" required><br><br>
+        {% if budget == 0 %}
+            <div class="card fade-in">
+                <h2>Welcome to Budget Tracker</h2>
+                <p>Let's get started by setting up your initial budget.</p>
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="initial_budget">Initial Budget Amount:</label>
+                        <input type="number" id="initial_budget" name="initial_budget" step="0.01" required placeholder="Enter your budget">
+                    </div>
+                    <button type="submit"><i class="fas fa-check"></i> Set Budget</button>
+                </form>
             </div>
 
-            <div class="form-group">
-                <label>Category:</label><br>
-                <input type="text" name="category" required><br><br>
-            </div>
-
-            <button type="submit">Add Expense</button>
-        </form>
-
-        <hr>
-        
-        <h2>Expenses</h2>
-
-        {% if expenses|length == 0 %}
-            <div class="empty-state">
-                <img src="{{ url_for('static', filename='images/undraw_no-data_ig65.svg') }}" alt="No data" class="empty-illustration">
-                <p>No expenses added yet.</p>
-            </div>
         {% else %}
-            <table class="expense-table">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Amount (Ksh)</th>
-                        <th>Category</th>
-                        <th>Date</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expense in expenses %}
-                    <tr data-category="{{ expense.category|lower }}">
-                        <td>{{ expense.description }}</td>
-                        <td>{{ expense.amount }}</td>
-                        <td>{{ expense.category }}</td>
-                        <td>{{ expense.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td><a href="/edit/{{ expense.id }}">Edit</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="dashboard-overview fade-in">
+                <div class="budget-summary">
+                    <div class="stat-card">
+                        <h3>Initial Budget</h3>
+                        <p class="value">Ksh {{ budget }}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Spent</h3>
+                        <p class="value">Ksh {{ total_spent }}</p>
+                    </div>
+                    <div class="stat-card {% if balance < 0 %}danger{% elif balance <= budget * 0.2 %}warning{% else %}good{% endif %}">
+                        <h3>Remaining Balance</h3>
+                        <p class="value">Ksh {{ balance }}</p>
+                    </div>
+                    
+                    {% if balance < 0 %}
+                        <div class="warning-over">
+                            <i class="fas fa-exclamation-circle"></i> You are over budget by Ksh {{ -balance }}
+                        </div>
+                    {% elif balance <= budget * 0.2 %}
+                        <div class="warning-low">
+                            <i class="fas fa-exclamation-triangle"></i> You're almost out of money (Ksh {{ balance }} remaining)
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="chart-wrapper fade-in">
+                    <h2>Expense Breakdown</h2>
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card fade-in">
+                <h2><i class="fas fa-plus-circle"></i> Add a New Expense</h2>
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <input type="text" id="description" name="description" required placeholder="What did you spend on?">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="amount">Amount (Ksh):</label>
+                        <input type="number" id="amount" name="amount" step="0.01" required placeholder="How much did you spend?">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" id="category" name="category" required placeholder="e.g. Food, Transport, Entertainment">
+                    </div>
+
+                    <button type="submit"><i class="fas fa-plus"></i> Add Expense</button>
+                </form>
+            </div>
+            
+            <div class="card fade-in">
+                <h2><i class="fas fa-list"></i> Your Expenses</h2>
+                
+                {% if expenses %}
+                <table class="expense-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount (Ksh)</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in expenses %}
+                        <tr data-category="{{ expense.category|lower }}">
+                            <td>{{ expense.description }}</td>
+                            <td>{{ expense.amount }}</td>
+                            <td>
+                                <span class="badge badge-{{ expense.category|lower }}">
+                                    {{ expense.category }}
+                                </span>
+                            </td>
+                            <td>{{ expense.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="/edit/{{ expense.id }}" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No expenses recorded yet. Add your first expense above.
+                </div>
+                {% endif %}
+            </div>
         {% endif %}
+    </div>
 
-        
-
-        <p><a href="/categories">📊 View Expenses by Category</a></p>
-        <p><a href="/filter">🔍 Filter Expenses by Category</a></p>
-        <p><a href="/erase" style="color: red;">❌ Erase all data (Start over)</a></p>
-    {% endif %}
-
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
     <script>
-        // Ensure 'expenses' is declared only once
-        const expenses = {{ expense_data | tojson }};
-        const categoryTotals = {};
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if the chart element exists before trying to use it
+            const chartElement = document.getElementById('expenseChart');
+            const expenseData = {{ expense_data | tojson }}; // Declare once for reuse
 
-        expenses.forEach(e => {
-            const cat = e.category;
-            if (!categoryTotals[cat]) categoryTotals[cat] = 0;
-            categoryTotals[cat] += e.amount;
-        });
+            if (chartElement && expenseData.length > 0) {
+                const categoryTotals = {};
 
-        const ctx = document.getElementById('expenseChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(categoryTotals), // Ensure comma is present
-                datasets: [{
-                    label: 'Expenses by Category',
-                    data: Object.values(categoryTotals),
-                    backgroundColor: [
-                        '#22c55e', '#3b82f6', '#a855f7', '#ef4444', '#f97316', '#64748b'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        position: 'bottom'
+                expenseData.forEach(e => {
+                    const cat = e.category;
+                    if (!categoryTotals[cat]) categoryTotals[cat] = 0;
+                    categoryTotals[cat] += e.amount;
+                });
+
+                const ctx = chartElement.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(categoryTotals),
+                        datasets: [{
+                            label: 'Expenses by Category',
+                            data: Object.values(categoryTotals),
+                            backgroundColor: [
+                                '#22c55e', '#3b82f6', '#a855f7', '#ef4444', '#f97316', '#64748b'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
                     }
-                }
+                });
             }
+
+            // Dynamic row coloring based on category
+            document.querySelectorAll('[data-category]').forEach(row => {
+                const cat = row.dataset.category;
+                const colorMap = {
+                    food: '#22c55e',
+                    transport: '#3b82f6',
+                    entertainment: '#a855f7',
+                    health: '#ef4444',
+                    utilities: '#f97316',
+                    other: '#64748b'
+                };
+
+                row.style.borderLeft = `6px solid ${colorMap[cat] || '#cbd5e1'}`;
+            });
         });
-
-        // Dynamic row coloring based on category
-        document.querySelectorAll('[data-category]').forEach(row => {
-        const cat = row.dataset.category;
-        const colorMap = {
-            food: '#22c55e',
-            transport: '#3b82f6',
-            entertainment: '#a855f7',
-            health: '#ef4444',
-            utilities: '#f97316',
-            other: '#64748b'
-        };
-
-        row.style.borderLeft = `6px solid ${colorMap[cat] || '#cbd5e1'}`;
-        });
-
-
     </script>
-      
-
 </body>
 </html>

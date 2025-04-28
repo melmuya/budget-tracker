@@ -1,12 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from budget_tracker import (get_total_expenses, get_balance)
 from flask_sqlalchemy import SQLAlchemy
 import os
 from datetime import datetime
+from dotenv import load_dotenv
 
 
+load_dotenv() # Load environment variables from .env file
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL") or "postgresql://budget_db_tged_user:jfCqD5qd830fQU7KpgF4vl7UcQSuirVa@dpg-d032rije5dus73c9u4sg-a.oregon-postgres.render.com/budget_db_tged"
+app.secret_key = os.environ.get("SECRET_KEY") 
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL") 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -69,8 +72,12 @@ def index():
             new_expense = Expense(description=description, amount=amount, category=category)
             db.session.add(new_expense)
             db.session.commit()
+
+            flash("Added new expense: {description}", "success")
+
         except ValueError:
-            return "Invalid expense amount", 400
+            flash("Invalid input. Please check your values.", "error")
+            return redirect("/")
 
         return redirect("/")
 
@@ -109,8 +116,11 @@ def edit_expense(expense_id):
             expense.amount = float(request.form["amount"].strip())
             expense.category = request.form["category"].strip().capitalize()
             db.session.commit()
+
+            flash("Expense updated successfully", "success") 
         except ValueError:
-            return "Invalid input", 400
+            flash("Invalid input.", "error")
+            return redirect("/")
         return redirect(url_for("index"))
 
     return render_template("edit.html", index=index, expense=expense)
@@ -154,6 +164,7 @@ def erase_data():
         set_budget(0)
         Expense.query.delete()
         db.session.commit()
+        flash("All data erased. Starting anew.", "info")
         return redirect("/")
 
     return render_template("erase.html")

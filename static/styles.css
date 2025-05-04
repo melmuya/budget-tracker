@@ -564,4 +564,64 @@
     100% { transform: rotate(360deg); }
   }
   
-  /* Add this JavaScript to each page with a form */
+
+
+/* Authentication Forms */
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.auth-links a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
+/* Remember me checkbox */
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Flash messages */
+.alert {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.alert i {
+  margin-right: 0.5rem;
+}
+
+.alert-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.alert-error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.alert-info {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.alert-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.welcome-message {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+  opacity: 0.8;
+}

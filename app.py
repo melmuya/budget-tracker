@@ -5,6 +5,9 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 load_dotenv() # Load environment variables from .env file
 app = Flask(__name__)
@@ -17,16 +20,29 @@ db = SQLAlchemy(app)
 from flask_migrate import Migrate
 migrate = Migrate(app, db)
 
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # Specify the login route
+login_manager.login_message = 'Please log in to access this page.'
+login_manager.login_message_category = 'info'
+
 
 # Helper
 def get_budget():
-    budget = Budget.query.first()
+    if not current_user.is_authenticated:
+        return 0
+    budget = Budget.query.filter_by(user_id=current_user.id).first()
     return budget.amount if budget else 0
 
 def set_budget(amount):
-    budget = Budget.query.first()
+    if not current_user.is_authenticated:
+        return 0
+
+    budget = Budget.query.filter_by(user_id=current_user.id).first()
+    
     if not budget:
-        budget = Budget(amount=amount)
+        budget = Budget(amount=amount, user_id=current_user.id)
         db.session.add(budget)
         action = "created"
     else:
@@ -42,6 +58,7 @@ def set_budget(amount):
 class Budget(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # nullable=True for migration
 
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,13 +66,119 @@ class Expense(db.Model):
     amount = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # nullable=True for migration
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     
+    # Relationship to other models
+    expenses = db.relationship('Expense', backref='user', lazy=True)
+    budget = db.relationship('Budget', backref='user', lazy=True, uselist=False)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+        
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+        
+    def __repr__(self):
+        return f'<User {self.username}>'
+    
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    # Check if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+        
+    if request.method == 'POST':
+        username = request.form['username'].strip()
+        email = request.form['email'].strip()
+        password = request.form['password']
+        password_confirm = request.form['password_confirm']
+        
+        # Simple validation
+        if not username or not email or not password:
+            flash('All fields are required', 'error')
+            return redirect(url_for('register'))
+            
+        if password != password_confirm:
+            flash('Passwords do not match', 'error')
+            return redirect(url_for('register'))
+            
+        # Check if username or email already exists
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists', 'error')
+            return redirect(url_for('register'))
+            
+        if User.query.filter_by(email=email).first():
+            flash('Email already in use', 'error')
+            return redirect(url_for('register'))
+        
+        # Create new user
+        user = User(username=username, email=email)
+        user.set_password(password)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Registration successful! Please log in.', 'success')
+        return redirect(url_for('login'))
+        
+    return render_template('register.html')
+    
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    # Check if user is already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+        
+    if request.method == 'POST':
+        username = request.form['username'].strip()
+        password = request.form['password']
+        remember = 'remember' in request.form
+        
+        # Find the user
+        user = User.query.filter_by(username=username).first()
+        
+        # Check if user exists and password is correct
+        if not user or not user.check_password(password):
+            flash('Invalid username or password', 'error')
+            return redirect(url_for('login'))
+            
+        # Log the user in
+        login_user(user, remember=remember)
+        
+        # Redirect to requested page or home
+        next_page = request.args.get('next')
+        if next_page:
+            return redirect(next_page)
+        return redirect(url_for('index'))
+        
+    return render_template('login.html')
+    
+@app.route('/logout')
+def logout():
+    logout_user()
+    flash('You have been logged out', 'info')
+    return redirect(url_for('login'))
+
+
 
 @app.route("/", methods=["GET", "POST"])
+@login_required  # Ensure only logged-in users can access this route
 def index():
     # budget, expenses = load_budget_data(DATA_FILE)
     budget = get_budget()
-    expenses = Expense.query.all()
+    expenses = Expense.query.filter_by(user_id=current_user.id).all()
 
     if budget == 0 and request.method == "POST" and "initial_budget" in request.form:
         # User is setting the initial budget
@@ -73,7 +196,7 @@ def index():
             amount = float(request.form["amount"].strip())
             category = request.form["category"].strip().capitalize()
 
-            new_expense = Expense(description=description, amount=amount, category=category)
+            new_expense = Expense(description=description, amount=amount, category=category, user_id=current_user.id)
             db.session.add(new_expense)
             db.session.commit()
 
@@ -104,9 +227,11 @@ def index():
         total_spent=total_spent,
         balance=balance,
         expense_data=expense_dicts,
+        user=current_user
     )
 
 @app.route("/edit-budget", methods=["GET", "POST"])
+@login_required  # Ensure only logged-in users can access this route
 def edit_budget():
     budget = get_budget()
     
@@ -133,9 +258,11 @@ def edit_budget():
     return render_template("edit_budget.html", budget=budget)
 
 @app.route("/edit/<int:expense_id>", methods=["GET", "POST"])
+@login_required  # Ensure only logged-in users can access this route
 def edit_expense(expense_id):
     
-    expense = db.session.get(Expense, expense_id) # Get by ID, not list index
+    # expense = db.session.get(Expense, expense_id) # Get by ID, not list index
+    expense = Expense.query.filter_by(id=expense_id, user_id=current_user.id).first() # Ensure it's the user's expense
 
     if not expense:
         return "Expense not found", 404
@@ -157,9 +284,9 @@ def edit_expense(expense_id):
 
 
 @app.route("/categories")
+@login_required  # Ensure only logged-in users can access this route
 def show_by_category():
-    budget = get_budget()
-    expenses = Expense.query.all()
+    expenses = Expense.query.filter_by(user_id=current_user.id).all()
 
     category_totals = {}
     for expense in expenses:
@@ -170,16 +297,14 @@ def show_by_category():
 
 
 @app.route("/filter", methods=["GET", "POST"])
+@login_required  # Ensure only logged-in users can access this route
 def filter_by_category():
-    budget = get_budget()
-    expenses = Expense.query.all()
-
     filtered_expenses = []
     selected_category = ""
 
     if request.method == "POST":
         selected_category = request.form["category"].strip().capitalize()
-        filtered_expenses = Expense.query.filter_by(category=selected_category).all()
+        filtered_expenses = Expense.query.filter_by(category=selected_category, user_id=current_user.id).all()
 
     return render_template(
         "filter.html",
@@ -189,10 +314,12 @@ def filter_by_category():
 
 
 @app.route("/erase", methods=["GET", "POST"])
+@login_required  # Ensure only logged-in users can access this route
 def erase_data():
     if request.method == "POST":
-        set_budget(0)
-        Expense.query.delete()
+        # Only delete the current user's data
+        Budget.query.filter_by(user_id=current_user.id).delete()
+        Expense.query.filter_by(user_id=current_user.id).delete()
         db.session.commit()
         flash("All data erased. Starting anew.", "info")
         return redirect("/")

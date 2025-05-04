@@ -42,7 +42,12 @@
                 <div class="budget-summary">
                     <div class="stat-card">
                         <h3>Initial Budget</h3>
-                        <p class="value">Ksh {{ budget }}</p>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <p class="value" style="margin: 0;">Ksh {{ budget }}</p>
+                            <a href="{{ url_for('edit_budget') }}" class="btn btn-sm btn-outline" title="Edit Budget">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
                     </div>
                     <div class="stat-card">
                         <h3>Total Spent</h3>

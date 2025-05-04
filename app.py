@@ -28,10 +28,14 @@ def set_budget(amount):
     if not budget:
         budget = Budget(amount=amount)
         db.session.add(budget)
+        action = "created"
     else:
+        old_amount = budget.amount
         budget.amount = amount
+        action = f"updated from Ksh {old_amount}"
     db.session.commit()
-
+    app.logger.info(f"Budget {action} to Ksh {amount}.")
+    return amount
 
 
 # Database Models
@@ -101,6 +105,32 @@ def index():
         balance=balance,
         expense_data=expense_dicts,
     )
+
+@app.route("/edit-budget", methods=["GET", "POST"])
+def edit_budget():
+    budget = get_budget()
+    
+    if request.method == "POST":
+        try:
+            new_budget = float(request.form["new_budget"].strip())
+            
+            # Basic validation
+            if new_budget <= 0:
+                flash("Budget must be greater than zero.", "error")
+                return redirect(url_for("edit_budget"))
+                
+            # Update the budget
+            set_budget(new_budget)
+            
+            flash(f"Budget successfully updated to Ksh {new_budget}.", "success")
+            return redirect(url_for("index"))
+            
+        except ValueError:
+            flash("Invalid budget amount. Please enter a valid number.", "error")
+            return redirect(url_for("edit_budget"))
+    
+    # GET request - display the edit form
+    return render_template("edit_budget.html", budget=budget)
 
 @app.route("/edit/<int:expense_id>", methods=["GET", "POST"])
 def edit_expense(expense_id):

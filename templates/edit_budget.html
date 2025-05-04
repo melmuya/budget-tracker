@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Budget | Budget Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h2 style="margin: 0;"><i class="fas fa-wallet"></i> Budget Tracker</h2>
+        </div>
+        <div class="navbar-links">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <a href="/categories"><i class="fas fa-chart-pie"></i> Categories</a>
+            <a href="/filter"><i class="fas fa-filter"></i> Filter</a>
+            <a href="/erase"><i class="fas fa-trash-alt"></i> Reset</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1><i class="fas fa-edit"></i> Edit Budget</h1>
+
+        <div class="card fade-in">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="new_budget">Current Budget: Ksh {{ budget }}</label>
+                    <input type="number" id="new_budget" name="new_budget" step="0.01" value="{{ budget }}" required>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" style="flex: 1;"><i class="fas fa-save"></i> Update Budget</button>
+                </div>
+            </form>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="back-link fade-in">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script>
+        // Add client-side validation
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const budgetInput = document.getElementById('new_budget');
+            const budgetValue = parseFloat(budgetInput.value);
+            
+            if (isNaN(budgetValue) || budgetValue <= 0) {
+                event.preventDefault();
+                alert('Please enter a valid budget amount greater than zero.');
+                budgetInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
